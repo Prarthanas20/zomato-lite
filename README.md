@@ -2,6 +2,8 @@
 
 One restaurant, two screens, two APIs, two tables.
 
+Live: <https://zomato-lite-tau-khaki.vercel.app>
+
 - `/restaurant/1` — the restaurant page: name, average rating, latest review, older reviews.
 - `/review/1` — write a review: stars, a comment, submit.
 
