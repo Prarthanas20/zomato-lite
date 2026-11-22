@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
-/* The palette: off-white paper, near-black ink, one warm accent. */
+/* The palette: warm paper, near-black ink, one deep terracotta accent. */
 @theme {
-  --color-paper: #faf8f5;
-  --color-ink: #1c1b18;
-  --color-muted: #726c63;
-  --color-line: #e8e2d8;
-  --color-accent: #a8542b;
-  --color-accent-soft: #f7ede4;
+  --color-paper: #f7f4ef;
+  --color-card: #fffdfa;
+  --color-ink: #171614;
+  --color-muted: #7a736a;
+  --color-line: #e3dcd1;
+  --color-accent: #9a4b24;
+  --color-accent-soft: #f3e7dc;
 }
 
 /* `inline` so these resolve on the element that uses them — next/font defines
@@ -26,6 +27,23 @@ body {
   color: var(--color-ink);
 }
 
+/* A whisper of paper grain. Barely visible, but it stops the page feeling flat. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 ::selection {
   background-color: #ecd9c8;
+}
+
+/* A single, quiet focus ring everywhere. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }

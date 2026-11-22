@@ -9,6 +9,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ArrowRight, Divider, Seal } from "@/components/Ornaments";
 
 type Restaurant = {
   name: string;
@@ -37,7 +38,7 @@ export default function ReviewPage() {
         const body = await response.json();
         if (response.ok && !cancelled) setRestaurant(body);
       } catch {
-        // The form still works; the heading just stays generic.
+        // The form still works; the heading just stays a placeholder.
       }
     }
 
@@ -84,33 +85,43 @@ export default function ReviewPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[560px] px-6 py-14 sm:py-20">
+    <main className="mx-auto w-full max-w-[560px] px-6 pb-16 pt-10 sm:pt-14">
       <Link
         href={`/restaurant/${restaurantId}`}
-        className="text-sm text-muted underline-offset-4 hover:text-ink hover:underline"
+        className="text-[0.6875rem] uppercase tracking-[0.18em] text-muted transition-colors hover:text-ink"
       >
-        ← Back
+        ← Back to the restaurant
       </Link>
 
-      <header className="mt-8">
-        <h1 className="font-serif text-[2.5rem] leading-[1.1] tracking-[-0.01em]">
-          {restaurant ? restaurant.name : "Write a review"}
+      <header className="mt-10 text-center">
+        <Seal />
+
+        <h1 className="mt-6 flex min-h-[3.25rem] items-center justify-center font-serif text-[2.25rem] leading-[1.05] tracking-[-0.01em]">
+          {restaurant ? (
+            restaurant.name
+          ) : (
+            <span className="h-8 w-52 rounded bg-line/70" aria-hidden="true" />
+          )}
         </h1>
+
         {restaurant && (
-          <p className="mt-3 text-[0.9375rem] text-muted">
-            {restaurant.cuisine} · {restaurant.area}
+          <p className="mt-4 text-[0.6875rem] font-medium uppercase tracking-[0.26em] text-muted">
+            {restaurant.cuisine} <span className="text-accent/50">·</span>{" "}
+            {restaurant.area}
           </p>
         )}
       </header>
 
+      <Divider className="mt-10" />
+
       <form onSubmit={handleSubmit} className="mt-10">
-        <fieldset>
-          <legend className="text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-muted">
-            Your rating
+        <fieldset className="text-center">
+          <legend className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
+            How was it?
           </legend>
 
           <div
-            className="mt-4 flex items-center gap-1"
+            className="mt-5 flex items-center justify-center gap-1.5"
             role="radiogroup"
             aria-label="Rating from 1 to 5"
           >
@@ -122,34 +133,35 @@ export default function ReviewPage() {
                 aria-checked={rating === n}
                 aria-label={`${n} star${n === 1 ? "" : "s"}`}
                 onClick={() => setRating(n)}
-                className={`rounded-md p-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                className={`rounded-full p-1.5 transition-colors ${
                   n <= rating ? "text-accent" : "text-line hover:text-muted"
                 }`}
               >
                 <svg
-                  width="30"
-                  height="30"
+                  width="34"
+                  height="34"
                   viewBox="0 0 24 24"
                   fill={n <= rating ? "currentColor" : "none"}
                   stroke="currentColor"
-                  strokeWidth={1.3}
+                  strokeWidth={1.1}
                   strokeLinejoin="round"
                   aria-hidden="true"
                 >
-                  <path d="M12 3.6l2.6 5.2 5.8.9-4.2 4.1 1 5.7-5.2-2.7-5.2 2.7 1-5.7-4.2-4.1 5.8-.9z" />
+                  <path d="M12 2.9l2.85 5.78 6.38.93-4.62 4.5 1.09 6.35L12 17.46l-5.7 3 1.09-6.35-4.62-4.5 6.38-.93z" />
                 </svg>
               </button>
             ))}
           </div>
-          <p className="mt-2 text-sm text-muted">
-            {rating === 0 ? "Pick 1 to 5" : `${rating} of 5`}
+
+          <p className="mt-3 text-[0.625rem] uppercase tracking-[0.2em] text-muted">
+            {rating === 0 ? "Tap a star" : `${rating} of 5`}
           </p>
         </fieldset>
 
-        <div className="mt-9">
+        <div className="mt-10">
           <label
             htmlFor="comment"
-            className="text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-muted"
+            className="block text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted"
           >
             Your review
           </label>
@@ -159,14 +171,14 @@ export default function ReviewPage() {
             onChange={(event) => setComment(event.target.value)}
             rows={5}
             placeholder="What was it like?"
-            className="mt-3 w-full resize-none rounded-lg border border-line bg-white/60 px-4 py-3 text-[0.9375rem] leading-relaxed placeholder:text-muted/60 focus:border-accent focus:outline-none"
+            className="mt-3 w-full resize-none rounded-xl border border-line bg-card px-5 py-4 text-[0.9375rem] leading-relaxed placeholder:text-muted/50 focus:border-accent focus:outline-none"
           />
         </div>
 
         {error && (
           <p
             role="alert"
-            className="mt-5 rounded-lg border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent"
+            className="mt-5 rounded-xl border border-accent/25 bg-accent-soft px-4 py-3 text-center text-sm text-accent"
           >
             {error}
           </p>
@@ -175,11 +187,18 @@ export default function ReviewPage() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-accent px-6 py-3 text-sm font-medium text-paper transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto"
+          className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-7 py-3.5 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320] disabled:cursor-not-allowed disabled:opacity-30"
         >
           {submitting ? "Sending…" : "Submit review"}
+          {!submitting && <ArrowRight />}
         </button>
       </form>
+
+      <footer className="mt-14 border-t border-line pt-6 text-center">
+        <p className="text-[0.5625rem] uppercase tracking-[0.3em] text-muted">
+          Zomato Lite
+        </p>
+      </footer>
     </main>
   );
 }

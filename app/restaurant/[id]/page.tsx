@@ -9,6 +9,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ArrowRight, Divider, Seal } from "@/components/Ornaments";
 import { Stars } from "@/components/Stars";
 
 type Review = {
@@ -70,16 +71,26 @@ export default function RestaurantPage() {
 
   if (error) {
     return (
-      <main className="mx-auto w-full max-w-[560px] px-6 py-16">
-        <p className="text-muted">{error}</p>
+      <main className="mx-auto w-full max-w-[560px] px-6 py-24 text-center">
+        <Seal />
+        <p className="mt-6 text-sm text-muted">{error}</p>
+        <Link
+          href="/restaurant/1"
+          className="mt-8 inline-block text-[0.6875rem] uppercase tracking-[0.2em] text-accent"
+        >
+          Back to the restaurant
+        </Link>
       </main>
     );
   }
 
   if (!data) {
     return (
-      <main className="mx-auto w-full max-w-[560px] px-6 py-16">
-        <p className="text-muted">Loading…</p>
+      <main className="mx-auto w-full max-w-[560px] px-6 py-24 text-center">
+        <Seal />
+        <p className="mt-6 text-[0.625rem] uppercase tracking-[0.26em] text-muted">
+          Loading
+        </p>
       </main>
     );
   }
@@ -87,90 +98,109 @@ export default function RestaurantPage() {
   const hasReviews = data.totalReviews > 0;
 
   return (
-    <main className="mx-auto w-full max-w-[560px] px-6 py-14 sm:py-20">
+    <main className="mx-auto w-full max-w-[560px] px-6 pb-16 pt-14 sm:pt-20">
       {/* 1. Who and where */}
-      <header>
-        <h1 className="font-serif text-[2.5rem] leading-[1.1] tracking-[-0.01em]">
+      <header className="text-center">
+        <Seal />
+        <h1 className="mt-6 font-serif text-[2.75rem] leading-[1.03] tracking-[-0.015em] sm:text-[3.25rem]">
           {data.name}
         </h1>
-        <p className="mt-3 text-[0.9375rem] text-muted">
-          {data.cuisine} · {data.area}
+        <p className="mt-4 text-[0.6875rem] font-medium uppercase tracking-[0.26em] text-muted">
+          {data.cuisine} <span className="text-accent/50">·</span> {data.area}
         </p>
       </header>
 
+      <Divider className="mt-10" />
+
       {/* 2. The average, printed as handed over by the API */}
-      <section className="mt-10 border-y border-line py-9">
+      <section className="py-10 text-center">
         {hasReviews ? (
-          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="font-serif text-[4.75rem] leading-none tracking-[-0.02em]">
+          <>
+            <div className="font-serif text-[5.5rem] leading-none tracking-[-0.035em] sm:text-[6.5rem]">
               {/* the average, printed as handed over — no arithmetic here */}
               {data.averageRating!.toFixed(1)}
-            </span>
-            <p className="pb-2 text-sm text-muted">
-              out of 5 · {data.totalReviews}{" "}
+            </div>
+            <p className="mt-4 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
+              Average of {data.totalReviews}{" "}
               {data.totalReviews === 1 ? "review" : "reviews"}
             </p>
-          </div>
+          </>
         ) : (
-          <p className="text-muted">No ratings yet.</p>
+          <>
+            <div className="font-serif text-[5.5rem] leading-none text-line">—</div>
+            <p className="mt-4 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
+              No ratings yet
+            </p>
+          </>
         )}
       </section>
 
-      {/* 6. Nothing yet? Invite the first review. */}
-      {!hasReviews && (
-        <section className="mt-9 rounded-xl border border-line p-6">
-          <p className="font-serif text-xl">No reviews yet.</p>
-          <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">
-            This table is empty. You could be the first person to say something
-            about the burritos.
-          </p>
-        </section>
-      )}
+      <Divider />
 
       {/* 3. The latest review, set apart */}
       {data.latestReview && (
-        <article className="mt-9 rounded-xl bg-accent-soft p-6">
-          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-accent">
+        <article className="relative mt-10 overflow-hidden rounded-2xl border border-line bg-accent-soft/70 px-6 py-7 sm:px-8 sm:py-8">
+          <p className="relative text-[0.625rem] font-medium uppercase tracking-[0.26em] text-accent">
             Latest review
           </p>
-          <div className="mt-3 flex items-center gap-2 text-accent">
-            <Stars value={data.latestReview.rating} />
-            <span className="text-sm text-muted">
+
+          <div className="relative mt-4 flex items-center gap-3 text-accent">
+            <Stars value={data.latestReview.rating} size={15} />
+            <span className="text-[0.625rem] uppercase tracking-[0.18em] text-muted">
               {data.latestReview.rating} / 5
             </span>
           </div>
-          <p className="mt-4 text-[1.0625rem] leading-relaxed">
+
+          <p className="relative mt-4 font-serif text-[1.375rem] leading-[1.5]">
             {data.latestReview.comment}
           </p>
+
           <time
             dateTime={data.latestReview.createdAt}
-            className="mt-4 block text-xs text-muted"
+            className="relative mt-5 block text-[0.625rem] uppercase tracking-[0.18em] text-muted"
           >
             {formatDate(data.latestReview.createdAt)}
           </time>
         </article>
       )}
 
+      {/* 6. Nothing yet? Invite the first review. */}
+      {!hasReviews && (
+        <section className="mt-10 rounded-2xl border border-dashed border-line px-8 py-12 text-center">
+          <p className="font-serif text-[1.625rem]">No reviews yet.</p>
+          <p className="mx-auto mt-3 max-w-[30ch] text-sm leading-relaxed text-muted">
+            Be the first to say something about the burritos.
+          </p>
+        </section>
+      )}
+
       {/* 4. Everything older, already newest-first from the API */}
       {data.reviews.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-[0.6875rem] font-medium uppercase tracking-[0.16em] text-muted">
-            Older reviews
-          </h2>
-          <ul className="mt-5 divide-y divide-line border-t border-line">
+        <section className="mt-14">
+          <div className="flex items-center gap-4">
+            <h2 className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
+              Older reviews
+            </h2>
+            <span className="h-px flex-1 bg-line" />
+          </div>
+
+          <ul>
             {data.reviews.map((review) => (
-              <li key={review.id} className="py-6">
-                <div className="flex items-center gap-2 text-accent">
-                  <Stars value={review.rating} />
-                  <span className="text-sm text-muted">{review.rating} / 5</span>
+              <li key={review.id} className="border-b border-line py-7 last:border-b-0">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-accent">
+                    <Stars value={review.rating} size={13} />
+                  </span>
+                  <time
+                    dateTime={review.createdAt}
+                    className="text-[0.625rem] uppercase tracking-[0.16em] text-muted"
+                  >
+                    {formatDate(review.createdAt)}
+                  </time>
                 </div>
-                <p className="mt-3 leading-relaxed">{review.comment}</p>
-                <time
-                  dateTime={review.createdAt}
-                  className="mt-2 block text-xs text-muted"
-                >
-                  {formatDate(review.createdAt)}
-                </time>
+                <p className="mt-3 text-[1.0625rem] leading-relaxed">
+                  {review.comment}
+                </p>
               </li>
             ))}
           </ul>
@@ -178,14 +208,21 @@ export default function RestaurantPage() {
       )}
 
       {/* 5. The way in */}
-      <div className="mt-12">
+      <div className="mt-12 flex justify-center">
         <Link
           href={`/review/${id}`}
-          className="inline-flex items-center justify-center rounded-lg bg-accent px-6 py-3 text-sm font-medium text-paper transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="group inline-flex items-center gap-2.5 rounded-full bg-accent px-7 py-3.5 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320]"
         >
           Write a review
+          <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
+
+      <footer className="mt-16 border-t border-line pt-6 text-center">
+        <p className="text-[0.5625rem] uppercase tracking-[0.3em] text-muted">
+          Zomato Lite
+        </p>
+      </footer>
     </main>
   );
 }
