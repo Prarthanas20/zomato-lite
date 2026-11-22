@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, Divider, Seal } from "@/components/Ornaments";
+import { ArrowRight, Rings, Seal } from "@/components/Ornaments";
 import { Stars } from "@/components/Stars";
 
 type Review = {
@@ -98,85 +98,85 @@ export default function RestaurantPage() {
   const hasReviews = data.totalReviews > 0;
 
   return (
-    <main className="mx-auto w-full max-w-[560px] px-6 pb-16 pt-14 sm:pt-20">
-      {/* 1. Who and where */}
-      <header className="text-center">
-        <Seal />
-        <h1 className="mt-6 font-serif text-[2.75rem] leading-[1.03] tracking-[-0.015em] sm:text-[3.25rem]">
-          {data.name}
-        </h1>
-        <p className="mt-4 text-[0.6875rem] font-medium uppercase tracking-[0.26em] text-muted">
-          {data.cuisine} <span className="text-accent/50">·</span> {data.area}
-        </p>
+    <main className="mx-auto w-full max-w-[600px] px-4 pb-14 pt-4 sm:px-6 sm:pt-8">
+      {/* 1 & 2. The signboard: who, where, and the average, as big as it gets */}
+      <header className="relative overflow-hidden rounded-t-[2rem] bg-ink px-6 pb-16 pt-11 text-center text-paper sm:px-10 sm:pb-20 sm:pt-14">
+        <Rings className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 text-paper/[0.06]" />
+        <Rings className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 text-paper/[0.04]" />
+
+        <div className="relative">
+          <Seal tone="dark" />
+
+          <h1 className="mt-6 font-serif text-[2.75rem] leading-[1.02] tracking-[-0.015em] sm:text-[3.25rem]">
+            {data.name}
+          </h1>
+
+          <p className="mt-4 text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-paper/55">
+            {data.cuisine} <span className="text-ember/80">·</span> {data.area}
+          </p>
+
+          <div className="mt-10 flex items-end justify-center gap-3.5">
+            {hasReviews ? (
+              <>
+                <span className="font-serif text-[5.5rem] leading-[0.78] tracking-[-0.04em] sm:text-[6.25rem]">
+                  {/* the average, printed as handed over — no arithmetic here */}
+                  {data.averageRating!.toFixed(1)}
+                </span>
+                <span className="pb-1.5 text-left text-[0.5625rem] font-medium uppercase leading-[1.8] tracking-[0.2em] text-paper/55">
+                  out of 5
+                  <br />
+                  {data.totalReviews}{" "}
+                  {data.totalReviews === 1 ? "review" : "reviews"}
+                </span>
+              </>
+            ) : (
+              <span className="font-serif text-[5rem] leading-[0.8] text-paper/25">
+                —
+              </span>
+            )}
+          </div>
+        </div>
       </header>
 
-      <Divider className="mt-10" />
+      {/* 3. The latest review, floating over the signboard */}
+      <div className="relative z-10 -mt-8 px-2 sm:px-5">
+        {data.latestReview ? (
+          <article className="rounded-2xl border border-line bg-card px-6 py-6 sm:px-7">
+            <p className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-accent">
+              Latest review
+            </p>
 
-      {/* 2. The average, printed as handed over by the API */}
-      <section className="py-10 text-center">
-        {hasReviews ? (
-          <>
-            <div className="font-serif text-[5.5rem] leading-none tracking-[-0.035em] sm:text-[6.5rem]">
-              {/* the average, printed as handed over — no arithmetic here */}
-              {data.averageRating!.toFixed(1)}
+            <div className="mt-3.5 flex items-center gap-3 text-accent">
+              <Stars value={data.latestReview.rating} size={15} />
+              <span className="text-[0.625rem] uppercase tracking-[0.18em] text-muted">
+                {data.latestReview.rating} / 5
+              </span>
             </div>
-            <p className="mt-4 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
-              Average of {data.totalReviews}{" "}
-              {data.totalReviews === 1 ? "review" : "reviews"}
+
+            <p className="mt-3.5 font-serif text-[1.375rem] leading-[1.45]">
+              {data.latestReview.comment}
             </p>
-          </>
+
+            <time
+              dateTime={data.latestReview.createdAt}
+              className="mt-4 block text-[0.625rem] uppercase tracking-[0.18em] text-muted"
+            >
+              {formatDate(data.latestReview.createdAt)}
+            </time>
+          </article>
         ) : (
-          <>
-            <div className="font-serif text-[5.5rem] leading-none text-line">—</div>
-            <p className="mt-4 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
-              No ratings yet
+          <section className="rounded-2xl border border-dashed border-line bg-card px-6 py-9 text-center">
+            <p className="font-serif text-[1.5rem]">No reviews yet.</p>
+            <p className="mx-auto mt-2 max-w-[30ch] text-sm leading-relaxed text-muted">
+              Be the first to say something about the burritos.
             </p>
-          </>
+          </section>
         )}
-      </section>
-
-      <Divider />
-
-      {/* 3. The latest review, set apart */}
-      {data.latestReview && (
-        <article className="relative mt-10 overflow-hidden rounded-2xl border border-line bg-accent-soft/70 px-6 py-7 sm:px-8 sm:py-8">
-          <p className="relative text-[0.625rem] font-medium uppercase tracking-[0.26em] text-accent">
-            Latest review
-          </p>
-
-          <div className="relative mt-4 flex items-center gap-3 text-accent">
-            <Stars value={data.latestReview.rating} size={15} />
-            <span className="text-[0.625rem] uppercase tracking-[0.18em] text-muted">
-              {data.latestReview.rating} / 5
-            </span>
-          </div>
-
-          <p className="relative mt-4 font-serif text-[1.375rem] leading-[1.5]">
-            {data.latestReview.comment}
-          </p>
-
-          <time
-            dateTime={data.latestReview.createdAt}
-            className="relative mt-5 block text-[0.625rem] uppercase tracking-[0.18em] text-muted"
-          >
-            {formatDate(data.latestReview.createdAt)}
-          </time>
-        </article>
-      )}
-
-      {/* 6. Nothing yet? Invite the first review. */}
-      {!hasReviews && (
-        <section className="mt-10 rounded-2xl border border-dashed border-line px-8 py-12 text-center">
-          <p className="font-serif text-[1.625rem]">No reviews yet.</p>
-          <p className="mx-auto mt-3 max-w-[30ch] text-sm leading-relaxed text-muted">
-            Be the first to say something about the burritos.
-          </p>
-        </section>
-      )}
+      </div>
 
       {/* 4. Everything older, already newest-first from the API */}
       {data.reviews.length > 0 && (
-        <section className="mt-14">
+        <section className="mt-12 px-1">
           <div className="flex items-center gap-4">
             <h2 className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
               Older reviews
@@ -186,7 +186,7 @@ export default function RestaurantPage() {
 
           <ul>
             {data.reviews.map((review) => (
-              <li key={review.id} className="border-b border-line py-7 last:border-b-0">
+              <li key={review.id} className="border-b border-line py-6 last:border-b-0">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-accent">
                     <Stars value={review.rating} size={13} />
@@ -198,7 +198,7 @@ export default function RestaurantPage() {
                     {formatDate(review.createdAt)}
                   </time>
                 </div>
-                <p className="mt-3 text-[1.0625rem] leading-relaxed">
+                <p className="mt-2.5 text-[1.0625rem] leading-relaxed">
                   {review.comment}
                 </p>
               </li>
@@ -208,17 +208,17 @@ export default function RestaurantPage() {
       )}
 
       {/* 5. The way in */}
-      <div className="mt-12 flex justify-center">
+      <div className="mt-11 flex justify-center">
         <Link
           href={`/review/${id}`}
-          className="group inline-flex items-center gap-2.5 rounded-full bg-accent px-7 py-3.5 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320]"
+          className="group inline-flex items-center gap-2.5 rounded-full bg-accent px-8 py-4 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320]"
         >
           Write a review
           <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
 
-      <footer className="mt-16 border-t border-line pt-6 text-center">
+      <footer className="mt-14 border-t border-line pt-6 text-center">
         <p className="text-[0.5625rem] uppercase tracking-[0.3em] text-muted">
           Zomato Lite
         </p>

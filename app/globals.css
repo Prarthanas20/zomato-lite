@@ -9,6 +9,7 @@
   --color-line: #e3dcd1;
   --color-accent: #9a4b24;
   --color-accent-soft: #f3e7dc;
+  --color-ember: #d08a5e;
 }
 
 /* `inline` so these resolve on the element that uses them — next/font defines
@@ -46,4 +47,10 @@ body::after {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
+}
+
+/* Text fields show focus through their border instead. */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }

@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, Divider, Seal } from "@/components/Ornaments";
+import { ArrowRight, Rings, Seal } from "@/components/Ornaments";
 
 type Restaurant = {
   name: string;
@@ -85,43 +85,49 @@ export default function ReviewPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[560px] px-6 pb-16 pt-10 sm:pt-14">
-      <Link
-        href={`/restaurant/${restaurantId}`}
-        className="text-[0.6875rem] uppercase tracking-[0.18em] text-muted transition-colors hover:text-ink"
-      >
-        ← Back to the restaurant
-      </Link>
+    <main className="mx-auto w-full max-w-[560px] px-4 pb-14 pt-4 sm:px-6 sm:pt-8">
+      <header className="relative overflow-hidden rounded-t-[2rem] bg-ink px-6 pb-16 pt-9 text-center text-paper">
+        <Rings className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 text-paper/[0.06]" />
+        <Rings className="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 text-paper/[0.04]" />
 
-      <header className="mt-10 text-center">
-        <Seal />
+        <Link
+          href={`/restaurant/${restaurantId}`}
+          className="absolute left-5 top-5 z-10 text-[0.625rem] uppercase tracking-[0.18em] text-paper/60 transition-colors hover:text-paper"
+        >
+          ← Back
+        </Link>
 
-        <h1 className="mt-6 flex min-h-[3.25rem] items-center justify-center font-serif text-[2.25rem] leading-[1.05] tracking-[-0.01em]">
-          {restaurant ? (
-            restaurant.name
-          ) : (
-            <span className="h-8 w-52 rounded bg-line/70" aria-hidden="true" />
+        <div className="relative mt-9">
+          <Seal tone="dark" />
+
+          <h1 className="mt-5 flex min-h-[2.5rem] items-center justify-center font-serif text-[2.125rem] leading-[1.05] tracking-[-0.01em]">
+            {restaurant ? (
+              restaurant.name
+            ) : (
+              <span className="h-7 w-44 rounded bg-paper/15" aria-hidden="true" />
+            )}
+          </h1>
+
+          {restaurant && (
+            <p className="mt-3 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-paper/55">
+              {restaurant.cuisine} <span className="text-ember/80">·</span>{" "}
+              {restaurant.area}
+            </p>
           )}
-        </h1>
-
-        {restaurant && (
-          <p className="mt-4 text-[0.6875rem] font-medium uppercase tracking-[0.26em] text-muted">
-            {restaurant.cuisine} <span className="text-accent/50">·</span>{" "}
-            {restaurant.area}
-          </p>
-        )}
+        </div>
       </header>
 
-      <Divider className="mt-10" />
-
-      <form onSubmit={handleSubmit} className="mt-10">
+      <form
+        onSubmit={handleSubmit}
+        className="relative z-10 -mt-8 rounded-2xl border border-line bg-card px-6 py-8 sm:px-8"
+      >
         <fieldset className="text-center">
           <legend className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted">
             How was it?
           </legend>
 
           <div
-            className="mt-5 flex items-center justify-center gap-1.5"
+            className="mt-4 flex items-center justify-center gap-1"
             role="radiogroup"
             aria-label="Rating from 1 to 5"
           >
@@ -153,12 +159,12 @@ export default function ReviewPage() {
             ))}
           </div>
 
-          <p className="mt-3 text-[0.625rem] uppercase tracking-[0.2em] text-muted">
+          <p className="mt-2 text-[0.625rem] uppercase tracking-[0.2em] text-muted">
             {rating === 0 ? "Tap a star" : `${rating} of 5`}
           </p>
         </fieldset>
 
-        <div className="mt-10">
+        <div className="mt-8">
           <label
             htmlFor="comment"
             className="block text-[0.625rem] font-medium uppercase tracking-[0.26em] text-muted"
@@ -171,7 +177,7 @@ export default function ReviewPage() {
             onChange={(event) => setComment(event.target.value)}
             rows={5}
             placeholder="What was it like?"
-            className="mt-3 w-full resize-none rounded-xl border border-line bg-card px-5 py-4 text-[0.9375rem] leading-relaxed placeholder:text-muted/50 focus:border-accent focus:outline-none"
+            className="mt-3 w-full resize-none rounded-xl border border-line bg-paper px-4 py-3.5 text-[0.9375rem] leading-relaxed placeholder:text-muted/50 focus:border-accent focus:outline-none"
           />
         </div>
 
@@ -187,14 +193,14 @@ export default function ReviewPage() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-7 py-3.5 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320] disabled:cursor-not-allowed disabled:opacity-30"
+          className="mt-7 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-7 py-3.5 text-[0.8125rem] font-medium tracking-[0.02em] text-paper transition-colors hover:bg-[#8a4320] disabled:cursor-not-allowed disabled:opacity-30"
         >
           {submitting ? "Sending…" : "Submit review"}
           {!submitting && <ArrowRight />}
         </button>
       </form>
 
-      <footer className="mt-14 border-t border-line pt-6 text-center">
+      <footer className="mt-12 border-t border-line pt-6 text-center">
         <p className="text-[0.5625rem] uppercase tracking-[0.3em] text-muted">
           Zomato Lite
         </p>
